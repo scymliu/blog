@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>文章</title>
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+</head>
+<body>
+	<nav class="nav navbar-light" style="background-color: #333333;">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="#">Test</a>
+			</div>
+			<ul class="nav navbar-nav nav-tabs">
+				<li><a data-toggle="tab" href="/home">Home</a></li>
+				<li><a data-toggle="tab" href="/articles_list">文章列表</a></li>
+				<li><a data-toggle="tab" href="/list_content">文章清單</a></li>
+				<li><a data-toggle="tab" href="/write">撰寫文章</a></li>
+			</ul>
+		</div>
+	</nav>
+	<div style="text-align:center"><b><font size="7" th:text="${article.title}"></font></b></div>
+	<div style="text-align:center"><textarea rows="40" cols="100" readonly th:text="${article.content}"></textarea></div>
+	<p th:text="${article.date}"></p>
+</body>
+</html>
