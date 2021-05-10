@@ -20,11 +20,17 @@ public class ArticleList {
 	
 	public ArticleList() {}
 	
+	public ArticleList(String name) {
+		this.name=name;
+	}
+	
 	public ArticleList(long id, long userid, String name) {
 		this.id = id;
 		this.userid = userid;
 		this.name = name;
 	}
+	
+	
 	
 	public long getId() {
 		return id;
@@ -42,4 +48,5 @@ public class ArticleList {
 		this.name = name;
 	}
 
+	
 }

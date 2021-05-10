@@ -76,4 +76,12 @@ public class Article {
 	public void setDate(String date) {
 		this.date = date;
 	}
+	
+	@Override
+	public String toString() {
+		return "Article [id=" + id + ", user=" + user + ", title=" + title + ", category=" + category + ", content="
+				+ content + ", date=" + date + "]";
+	}
+	
+	
 }

@@ -11,50 +11,57 @@ import javax.persistence.Table;
 @IdClass(ListContent.ListContentId.class)
 @Entity
 @Table(name = "list_content")
-public class ListContent implements Serializable{
+public class ListContent implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	private long id;
 	@Id
-	@Column(name="article_id")
+	@Column(name = "article_id")
 	private long articleid;
 	private String title;
 	private String category;
-	
-	public static class ListContentId  implements Serializable{
+
+	public static class ListContentId implements Serializable {
 		private static final long serialVersionUID = 1L;
-		
+
 		private long id;
-        private long articleid;
-        
-        public ListContentId() {}
-        
-        public ListContentId(long id, long articleid) {
+		private long articleid;
+
+		public ListContentId() {
+		}
+
+		public ListContentId(long id, long articleid) {
 			super();
 			this.id = id;
 			this.articleid = articleid;
 		}
-        
+
 		public long getArticleid() {
 			return articleid;
 		}
-		
+
 		public void setArticleid(long articleid) {
 			this.articleid = articleid;
 		}
+
 		public long getId() {
 			return id;
 		}
+
 		public void setId(long id) {
 			this.id = id;
 		}
-        
 
-    }
-	
-	public ListContent() {}
-	
+	}
+
+	public ListContent() {
+	}
+
+	public ListContent(String category) {
+		this.category = category;
+	}
+
 	public ListContent(long id, long articleid, String title, String category) {
 		this.id = id;
 		this.articleid = articleid;
@@ -93,6 +100,5 @@ public class ListContent implements Serializable{
 	public void setCategory(String category) {
 		this.category = category;
 	}
-	
-	
+
 }

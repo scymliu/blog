@@ -3,6 +3,7 @@ package com.blog.controller;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.blog.Repository.AccountRepository;
@@ -28,7 +30,7 @@ import com.blog.model.ListContent;
 public class Main {
 
 	private RestTemplate restTemplate = new RestTemplate();
-
+	
 	@Autowired
 	ArticleRepository articleRepository;
 	@Autowired
@@ -49,9 +51,9 @@ public class Main {
 	public String articles_list(Model model, HttpSession session) {
 		if (session.getAttribute("user_id") == null)
 			return "redirect:/login";
-		String user_id = (String) session.getAttribute("user_id");
-		List<Article> articles_list = articleRepository.findByUser(user_id);
-		model.addAttribute("articles_list", articles_list);
+		Long user_id = (Long) session.getAttribute("user_id");
+		Optional<Article> temp =articleRepository.findById(user_id);
+		model.addAttribute("articles_list",articleRepository.findByUser(temp.get().getUser()));
 		return "article_list";
 	}
 
@@ -61,6 +63,8 @@ public class Main {
 			return "redirect:/login";
 		Article article = restTemplate.getForObject("http://localhost:8080/api/articles/" + id, Article.class);
 		model.addAttribute("article", article);
+		model.addAttribute("article_id", id);
+		model.addAttribute("article_list",articlelistRepository.findByUserid((long)session.getAttribute("user_id")));
 		return "diary";
 	}
 
@@ -75,7 +79,9 @@ public class Main {
 	public String Writting(@ModelAttribute Article article, HttpSession session) {
 		if (session.getAttribute("user_id") == null)
 			return "redirect:/login";
-		article.setUser((String) session.getAttribute("user_id"));
+		
+		Long id = (Long) session.getAttribute("user_id");
+		article.setUser((accountRepository.findById(id).get().getUsername()));
 		article.setDate(getDateTime());
 		articleRepository.save(article);
 
@@ -93,10 +99,10 @@ public class Main {
 	public String Logining(@ModelAttribute Account account, HttpSession session) {
 		Account temp = accountRepository.findByEmail(account.getEmail());
 		if (temp.getPassword().equals(account.getPassword())) {
-			session.setAttribute("user_id", temp.getUsername());
+			session.setAttribute("user_id", temp.getId());
 			return "redirect:/home";
 		}
-		return "login";
+		return "redirect:/login";
 	}
 
 	@GetMapping("/list/{id}")
@@ -112,12 +118,44 @@ public class Main {
 	public String list_content(Model model, HttpSession session) {
 		if (session.getAttribute("user_id") == null)
 			return "redirect:/login";
-		List<ArticleList> list = articlelistRepository
-				.findByUserid(accountRepository.findByUsername((String) session.getAttribute("user_id")).getId());
+		List<ArticleList> list = articlelistRepository.findByUserid((Long)session.getAttribute("user_id"));
 		model.addAttribute("list", list);
 		return "list";
 	}
 
+	@PostMapping("/add_list")
+	public String add_list(@ModelAttribute ArticleList title_name, HttpSession session) {
+		if (session.getAttribute("user_id") == null)
+			return "redirect:/login";
+
+		ArticleList temp = new ArticleList();
+		temp.setName(title_name.getName());
+		temp.setUserid((long) session.getAttribute("user_id"));
+		articlelistRepository.save(temp);
+		
+		return "redirect:/list_content";
+	}
+	
+	@PostMapping("/insert2list")
+	public String insert2list(@ModelAttribute ListContent content, HttpSession session) {
+
+		System.out.println(content.getCategory());
+		
+		String temp[]=content.getCategory().split("=");
+		
+		ListContent listcontent=new ListContent();
+		listcontent.setId(Long.parseLong(temp[0]));
+		listcontent.setArticleid(Long.parseLong(temp[1]));
+		
+		Article article=articleRepository.findById(Long.parseLong(temp[1])).get();
+		listcontent.setCategory(article.getCategory());
+		listcontent.setTitle(article.getTitle());
+		
+		listcontentRepository.save(listcontent);
+		
+		return "redirect:/home";
+	}
+	
 	public String getDateTime() {
 		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 		Date date = new Date();

@@ -3,8 +3,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>文章清單</title>
-<link rel="stylesheet"
-	href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 </head>
 <body>
 	<nav class="nav navbar-light" style="background-color: #333333;">
@@ -20,6 +22,15 @@
 			</ul>
 		</div>
 	</nav>
+	<div>
+	<button id="new" onclick="detachDialog()">新增</button>
+        <div id="add">
+        <form th:modelAttribute="insert" action="/add_list" method="POST">
+            <input id="new_add" name="name" type="text" required placeholder="請輸入清單名稱">
+            <button type="submit">上傳</button>
+        </form>
+        </div>
+     </div>
 	<table class="table">
 		<thead class="thead-dark">
 			<tr>
@@ -34,4 +45,18 @@
 		</tr>
 	</table>
 </body>
+
+<script>
+		$("#add").dialog(
+				{
+					autoOpen : false,
+					modal : true,
+					title : "建立清單"
+				});
+
+		function detachDialog() {
+			$("#add").dialog("open");
+		}
+    </script>
+
 </html>
