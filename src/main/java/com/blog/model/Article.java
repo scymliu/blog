@@ -19,28 +19,32 @@ public class Article {
 	private String content;
 	@Column(name="CREATE_DATE")
 	private String date;
+	private Boolean privacy;
 	
 	public Article(){}
-	public Article(String user,String title, String category, String content) {
+	public Article(String user,String title, String category, String content,Boolean privacy) {
 		this.user=user;
 		this.title = title;
 		this.category = category;
 		this.content = content;
+		this.setPrivacy(privacy);
 		this.date="null";
 	}
-	public Article(String user,String title, String category, String content, String date) {
+	public Article(String user,String title, String category, String content, String date,Boolean privacy) {
 		this.user=user;
 		this.title = title;
 		this.category = category;
 		this.content = content;
 		this.date = date;
+		this.setPrivacy(privacy);
 	}
 
 	
-	public Article(String title, String category, String content) {
+	public Article(String title, String category, String content,Boolean privacy) {
 		this.title = title;
 		this.category = category;
 		this.content = content;
+		this.setPrivacy(privacy);
 	}
 	
 	public String getUser() {
@@ -76,11 +80,16 @@ public class Article {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	
+	public Boolean getPrivacy() {
+		return privacy;
+	}
+	public void setPrivacy(Boolean privacy) {
+		this.privacy = privacy;
+	}
 	@Override
 	public String toString() {
 		return "Article [id=" + id + ", user=" + user + ", title=" + title + ", category=" + category + ", content="
-				+ content + ", date=" + date + "]";
+				+ content + ", date=" + date + ", privacy=" + privacy + "]";
 	}
 	
 	

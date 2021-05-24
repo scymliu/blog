@@ -8,4 +8,8 @@ import com.blog.model.Article;
 public interface ArticleRepository extends JpaRepository<Article, Long>{
 
 	List<Article> findByUser(String user);
+	
+	List<Article> findByTitleContaining(String title);
+	
+	List<Article> findByTitleContainingAndCategory(String title,String category);
 }
