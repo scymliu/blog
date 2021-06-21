@@ -17,20 +17,21 @@ public class ArticleList {
 	@Column(name="user_id")
 	private long userid;
 	private String name;
+	private String intro;
 	
 	public ArticleList() {}
 	
-	public ArticleList(String name) {
+	public ArticleList(String name,String intro) {
 		this.name=name;
+		this.intro=intro;
 	}
 	
-	public ArticleList(long id, long userid, String name) {
+	public ArticleList(long id, long userid, String name,String intro) {
 		this.id = id;
 		this.userid = userid;
 		this.name = name;
+		this.intro=intro;
 	}
-	
-	
 	
 	public long getId() {
 		return id;
@@ -46,6 +47,14 @@ public class ArticleList {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getIntro() {
+		return intro;
+	}
+
+	public void setIntro(String intro) {
+		this.intro = intro;
 	}
 
 	

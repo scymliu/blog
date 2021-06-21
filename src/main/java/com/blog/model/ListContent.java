@@ -21,6 +21,7 @@ public class ListContent implements Serializable {
 	private long articleid;
 	private String title;
 	private String category;
+	private String user;
 
 	public static class ListContentId implements Serializable {
 		private static final long serialVersionUID = 1L;
@@ -62,11 +63,12 @@ public class ListContent implements Serializable {
 		this.category = category;
 	}
 
-	public ListContent(long id, long articleid, String title, String category) {
+	public ListContent(long id, long articleid, String title, String category,String user) {
 		this.id = id;
 		this.articleid = articleid;
 		this.title = title;
 		this.category = category;
+		this.user=user;
 	}
 
 	public long getId() {
@@ -99,6 +101,14 @@ public class ListContent implements Serializable {
 
 	public void setCategory(String category) {
 		this.category = category;
+	}
+
+	public String getUser() {
+		return user;
+	}
+
+	public void setUser(String user) {
+		this.user = user;
 	}
 
 }

@@ -7,9 +7,15 @@ import com.blog.model.Article;
 
 public interface ArticleRepository extends JpaRepository<Article, Long>{
 
-	List<Article> findByUser(String user);
+	List<Article> findTop10ByPrivacyOrderByDateDesc(boolean privacy);
 	
-	List<Article> findByTitleContaining(String title);
+	List<Article> findByUserOrderByDateDesc(String user);
 	
-	List<Article> findByTitleContainingAndCategory(String title,String category);
+	List<Article> findByUserAndPrivacyOrderByDateDesc(String user,boolean privacy);
+	
+	List<Article> findByTitleContainingOrderByDateDesc(String title);
+	
+	List<Article> findByTitleContainingAndCategoryOrderByDateDesc(String title,String category);
+	
+	List<Article> findTop3ByUserAndPrivacyOrderByDateDesc(String user,boolean privacy);
 }

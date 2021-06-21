@@ -1,11 +1,11 @@
 package com.blog.model;
 
-public class AString {
+public class Msg {
 	private String response;
 
-	public AString() {}
+	public Msg() {}
 	
-	public AString(String response) {
+	public Msg(String response) {
 		this.response = response;
 	}
 

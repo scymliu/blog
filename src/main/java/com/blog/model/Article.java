@@ -22,6 +22,15 @@ public class Article {
 	private Boolean privacy;
 	
 	public Article(){}
+	public Article(long id, String user, String title, String category, String content, Boolean privacy) {
+		this.id = id;
+		this.user = user;
+		this.title = title;
+		this.category = category;
+		this.content = content;
+		this.privacy = privacy;
+		this.date="null";
+	}
 	public Article(String user,String title, String category, String content,Boolean privacy) {
 		this.user=user;
 		this.title = title;
@@ -38,8 +47,6 @@ public class Article {
 		this.date = date;
 		this.setPrivacy(privacy);
 	}
-
-	
 	public Article(String title, String category, String content,Boolean privacy) {
 		this.title = title;
 		this.category = category;

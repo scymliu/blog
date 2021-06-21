@@ -1,7 +1,5 @@
 package com.blog.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
@@ -12,104 +10,83 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.blog.Repository.AccountRepository;
-import com.blog.Repository.ArticleListRepository;
-import com.blog.Repository.ArticleRepository;
-import com.blog.Repository.ListContentRepository;
-import com.blog.exception.ArticleNotFoundException;
+import com.blog.service.*;
 import com.blog.model.Account;
 import com.blog.model.ArticleList;
 import com.blog.model.ListContent;
 import com.blog.model.Article;
-import com.blog.model.AString;
+import com.blog.model.Msg;
 
 @RestController
 public class Rest {
-
+	
 	@Autowired
-	ArticleRepository articleRepository;
+	AccountService accountservice;
 	@Autowired
-	AccountRepository accountRepository;
+	ArticleService articleservice;
 	@Autowired
-	ArticleListRepository articlelistRepository;
+	ArticleListService articlelistservice;
 	@Autowired
-	ListContentRepository listcontentRepository;
+	ListContentService listcontentservice;
+	
+	//------------------帳號------------------//
 	
 	@PostMapping("/api/login")
-	public Account login(@RequestBody Account account) {
-		return accountRepository.findByEmailAndPassword(account.getEmail(), account.getPassword());
+	public Account AccountAuth(@RequestBody Account account) {
+		return accountservice.Auth(account);
 	}
-	
-	//Get全部文章
-	@GetMapping("/api/articles")
-	public List<Article> ArticleAll() {
-		return articleRepository.findAll();
-	}
+		
+	//------------------文章------------------//
 
-	//Get標題
 	@GetMapping("/api/articles/search")
-	public List<Article> ArticleBySearch(@RequestParam(value = "title") String title,
-			@RequestParam(value = "category")String category){
-		if(category.equals("所有"))
-			return articleRepository.findByTitleContaining(title);
-		return articleRepository.findByTitleContainingAndCategory(title, category);
+	public List<Article> ArticleBySearch(@RequestParam(value = "title") String title,@RequestParam(value = "category")String category){
+		return articleservice.ArticleSearch(title, category);
 	}
-	
-	//Post新文章
 	@PostMapping("/api/articles")
-	public Article newArticle(@RequestBody Article newArticle) {
-		newArticle.setDate(getDateTime());
-		return articleRepository.save(newArticle);
+	public Article WriteArticle(@RequestBody Article newArticle) {
+		return articleservice.newArticle(newArticle);
 	}
-	
-	//Get藉由文章ID取得文章
 	@GetMapping("/api/articles/{id}")
 	public Article one(@PathVariable Long id) {
-	    return articleRepository.findById(id).orElseThrow(() -> new ArticleNotFoundException(id));
+	    return articleservice.getbyid(id);
 	  }
-	
-	//Get使用者的文章列表清單
-	@GetMapping("/api/listoflist")
-	public List<ArticleList> ArticleListByUser(){
-		return articlelistRepository.findByUserid((long)1);
+	@GetMapping("/api/articles") 
+	public List<Article> NewArticle(){
+		return articleservice.NewestArticle();
+	}
+	@GetMapping("/api/articles/userpage") 
+	public List<Article> UserNewArticle(@RequestParam(value = "user") String user){
+		return articleservice.OwnArticleTop3(user);
+	}
+	@GetMapping("/api/articles/user/{user}")
+	public List<Article> UserArticle(@PathVariable String user,@RequestParam(value = "requestuser") String requestuser){
+		return articleservice.UserArticle(user, requestuser);
 	}
 	
-	//Get文章特定清單內容
+	//----------------文章清單----------------//
+	
+	@GetMapping("/api/listoflist/{id}")
+	public List<ArticleList> ArticleListByUser(@PathVariable Long id){
+		return articlelistservice.UserList(id);
+	}	
+	@PostMapping("/api/newlist")
+	public Msg NewList(@RequestBody ArticleList articleList){
+		return articlelistservice.newList(articleList);
+	}	
+	
+	//----------------清單內容----------------//
+	
 	@GetMapping("/api/articlelist/{id}")
 	public List<ListContent> ListContentById(@PathVariable Long id){
-		return listcontentRepository.findById(id);
+		return listcontentservice.ListContentById(id);
+	}
+	@PostMapping("/api/articlelist")
+	public Msg Insert2list(@RequestBody ListContent listcontent){
+		return listcontentservice.insert2list(listcontent);
+	}
+	@GetMapping("/api/articlelist/delete/{id}")
+	public Msg DelListContent(@PathVariable Long id, @RequestParam(value="articleid") Long articleid) {
+		return listcontentservice.delSelect(id, articleid);
 	}
 
-	//Post將文章加進清單
-	@PostMapping("/api/articlelist")
-	public AString ListContentById(@RequestBody ListContent listcontent){
-		List<ListContent> temp = listcontentRepository.findById(listcontent.getId());
-		boolean test=false;
-		for(ListContent i:temp) {
-			if(i.getArticleid()==listcontent.getArticleid())
-				test=true;
-		}
-		if(test)
-			return new AString("已經存在此清單");
-		Article article = articleRepository.findById(listcontent.getArticleid()).get();
-		listcontent.setCategory(article.getCategory());
-		listcontent.setTitle(article.getTitle());
-		
-		listcontentRepository.save(listcontent);
-		
-		return new AString("成功儲存");
-	}
-	
-	//Get帳號
-	@GetMapping("/api/accounts")
-	public List<Account> AccountAll() {
-		return accountRepository.findAll();
-	}
-	
-	public String getDateTime() {
-		SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-		Date date = new Date();
-		String strDate = sdFormat.format(date);
-		return strDate;
-	}
 }
